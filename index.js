@@ -12,3 +12,18 @@ I need this code, but don't know where, perhaps should make some middleware, don
 
 Pull your server into this file and start it!
 */
+
+require('dotenv').config()
+const server = require('./api/server')
+
+
+const PORT = process.env.PORT  ||  9000
+if(PORT){
+    server.listen(PORT, () =>{
+        console.log(`serveris running at port ${PORT}`)
+    })
+
+}else{
+    console.error('PORT is not set')
+}
+
