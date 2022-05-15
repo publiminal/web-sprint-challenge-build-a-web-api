@@ -1,6 +1,6 @@
 const express = require('express')
 const dbProjects = require('./projects-model')
-// const {  } = require('./projects-middleware')
+const { validateProjectId , validateProject} = require('./projects-middleware')
 
 const router = express.Router()
 
@@ -12,7 +12,7 @@ const router = express.Router()
     Returns an array of projects as the body of the response.
     If there are no projects it responds with an empty array.
  */
-router.get('/', (req, res) => {
+router.get('/',  (req, res) => {
     dbProjects.get()
     .then((projects) => res.status(200).json(projects))
     .catch((err) => {
@@ -26,12 +26,12 @@ router.get('/', (req, res) => {
 [ ] 
     [GET] /api/projects/:id
     Returns a project with the given id as the body of the response.
+    ValidateProjectId attach a project to req.project if valid Id, otherwise handle errors
     If there is no project with the given id it responds with a status code 404.
  */
-router.get('/:id', (req, res) => {
-    dbProjects.get(id)
-    .then(() => res.status().json())
-    .catch(() => res.status().json())
+router.get('/:id', validateProjectId, (req, res) => {
+    dbProjects.get(req.params.id)
+    .then( project => {  if (project) res.status(200).json(req.project) })
 })
 
 /* 
@@ -39,10 +39,13 @@ router.get('/:id', (req, res) => {
 Returns the newly created project as the body of the response.
 If the request body is missing any of the required fields it responds with a status code 400.
  */
-router.post('/', (req, res) => {
-    dbProjects.insert(project)
-    .then(() => res.status().json())
-    .catch(() => res.status().json())
+router.post('/', validateProject, (req, res) => {
+    dbProjects.insert(req.body)
+    .then(newProject => res.status(200).json(newProject))
+    .catch((err) => {
+        console.error({err})
+        res.status(500).json({message:'The projects information could not be saved'})
+    })
 })
 
 /* 

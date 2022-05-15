@@ -1,6 +1,6 @@
 const express = require('express')
 const dbActions = require('./actions-model')
-const { validateActionId } = require('./actions-middlware')
+const { validateActionId , validateAction} = require('./actions-middlware')
 
 const router = express.Router()
 
@@ -43,10 +43,13 @@ router.get('/:id', validateActionId , (req, res) => {
     If the request body is missing any of the required fields it responds with a status code 400.
     When adding an action make sure the project_id provided belongs to an existing project.
  */
-    router.post('/', (req, res) => {
-        dbActions.insert(action)
-        .then(() => res.status().json())
-        .catch(() => res.status().json())
+    router.post('/', validateAction,  (req, res) => {
+        dbActions.insert(req.body)
+        .then((newAction) => res.status(200).json(newAction))
+        .catch((err) => {
+            console.error({err})
+            res.status(500).json({message:'The action(s) information could not be saved'})
+        })
     })
 
 
