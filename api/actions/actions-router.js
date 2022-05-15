@@ -1,6 +1,6 @@
 const express = require('express')
 const dbActions = require('./actions-model')
-// const {  } = require('./actions-middlware')
+const { validateActionId } = require('./actions-middlware')
 
 const router = express.Router()
 
@@ -26,12 +26,13 @@ const router = express.Router()
     [ ] 
     [GET] /api/actions/:id
     Returns an action with the given id as the body of the response.
+    ValidateProjectId attach an action to req.action if valid Id, otherwise handle errors
     If there is no action with the given id it responds with a status code 404.
+
 */
-router.get('/:id', (req, res) => {
-    dbActions.get(id)
-    .then(() => res.status().json())
-    .catch(() => res.status().json())
+router.get('/:id', validateActionId , (req, res) => {
+    dbActions.get(req.params.id)
+    .then( action =>{ if (action) res.status(200).json(req.action) })
 })
 
 
