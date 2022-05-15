@@ -24,7 +24,7 @@ function validateProjectId(req, res, next) {
     })
     .catch(err => {
         console.error('ValidateProject error ::', err )
-        res.status(500).json({message:'The project information could not be retrieved'})
+        res.status(500).json({message:'The project information could not be saved/retrieved'})
     })
   
     // console.log('isValidUser', isValidUser)
@@ -36,7 +36,7 @@ function validateProjectId(req, res, next) {
 */
 function validateProject(req, res, next) {
   const project = req.body
-  const isValid = 'name' in project && 'description' in project
+  const isValid = 'name' in project && 'description' in project && 'completed' in project
   if(!isValid) {
     res.status(400).json({ message: "missing required name or project field  " })
     return

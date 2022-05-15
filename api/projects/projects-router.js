@@ -55,10 +55,9 @@ router.post('/', validateProject, (req, res) => {
     If there is no project with the given id it responds with a status code 404.
     If the request body is missing any of the required fields it responds with a status code 400.
  */
-router.put('/:id', (req, res) => {
-    dbProjects.update(id, changes)
-    .then(() => res.status().json())
-    .catch(() => res.status().json())
+router.put('/:id', validateProject, validateProjectId,   (req, res) => {
+    dbProjects.update(req.project.id, req.body)
+    .then( (newProject) => { res.status(200).json(newProject) })
 })
 
 /*     
@@ -67,10 +66,9 @@ router.put('/:id', (req, res) => {
     Returns no response body.
     If there is no project with the given id it responds with a status code 404.
  */
-router.delete('/:id', (req, res) => {
-    dbProjects.remove(id)
-    .then(() => res.status().json())
-    .catch(() => res.status().json())
+router.delete('/:id', validateProjectId, (req, res) => {
+    dbProjects.remove(req.project.id)
+    .then(() => res.status(200).json())
 })
 
 /* 
@@ -79,10 +77,9 @@ router.delete('/:id', (req, res) => {
     Returns an array of actions (could be empty) belonging to a project with the given id.
     If there is no project with the given id it responds with a status code 404. 
 */
-router.get('/:id/actions', (req, res) => {
-    dbProjects.getProjectActions(projectId)
-    .then(() => res.status().json())
-    .catch(() => res.status().json())
+router.get('/:id/actions', validateProjectId, (req, res) => {
+    dbProjects.getProjectActions(req.project.id)
+    .then((actions) => res.status(200).json(actions))
 })
 
 

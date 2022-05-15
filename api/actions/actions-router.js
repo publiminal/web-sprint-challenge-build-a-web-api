@@ -45,8 +45,8 @@ router.get('/:id', validateActionId , (req, res) => {
  */
     router.post('/', validateAction,  (req, res) => {
         dbActions.insert(req.body)
-        .then((newAction) => res.status(200).json(newAction))
-        .catch((err) => {
+            .then((newAction) => res.status(200).json(newAction))
+            .catch((err) => {
             console.error({err})
             res.status(500).json({message:'The action(s) information could not be saved'})
         })
@@ -60,10 +60,9 @@ router.get('/:id', validateActionId , (req, res) => {
     If there is no action with the given id it responds with a status code 404.
     If the request body is missing any of the required fields it responds with a status code 400.
  */
-    router.put('/:id', (req, res) => {
-        dbActions.update(id, changes)
-        .then(() => res.status().json())
-        .catch(() => res.status().json())
+    router.put('/:id', validateAction, validateActionId, (req, res) => {
+        dbActions.update(req.action.id, req.body)
+            .then( (newAction) => { res.status(200).json(newAction) })
     })
 
 
@@ -74,10 +73,9 @@ router.get('/:id', validateActionId , (req, res) => {
     Returns no response body.
     If there is no action with the given id it responds with a status code 404.
  */
-    router.delete('/:id', (req, res) => {
-        dbActions.remove(id)
-        .then(() => res.status().json())
-        .catch(() => res.status().json())
+    router.delete('/:id', validateActionId, (req, res) => {
+        dbActions.remove(req.action.id) 
+        .then(() => res.status(200).json())
     })
 
 
